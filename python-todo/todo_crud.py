@@ -71,3 +71,23 @@ def complete_task(task_id: int) -> bool:
 
   return False
 
+def edit_task(task_id: int, **fields) -> bool:
+  tasks = load_tasks()
+
+  for task in tasks:
+    if task.get("id") == task_id:
+      if 'title' in fields:
+        task['title'] = fields['title']
+      if 'due' in fields:
+        due_val = fields['due']
+        try:
+          due_dt = datetime.strptime(due_val, "%m/%d/%Y")
+          task['due'] = due_dt.isoformat()
+        except ValueError:
+          raise ValueError(f"Invalid due date format: {due_val}. Use MM/DD/YYYY.")
+      save_tasks(tasks)
+      print(tasks)
+      return True
+
+  print(tasks)
+  return False
