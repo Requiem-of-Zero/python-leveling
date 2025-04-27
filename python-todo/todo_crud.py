@@ -19,6 +19,12 @@ def add_task(title:str, due:str = None) -> dict:
   tasks = load_tasks()
   next_id = max((t.get("id", 0) for t in tasks), default=0) + 1
 
+  try:
+    due_dt = datetime.strptime(due, "%m/%d/%Y")
+    due = due_dt.isoformat()
+  except ValueError:
+    raise ValueError(f"Invalid due date format: {due}. Use MM/DD/YYYY.")
+
   task = {
     "id": next_id,
     "title": title,
