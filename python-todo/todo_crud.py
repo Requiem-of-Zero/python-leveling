@@ -30,3 +30,44 @@ def add_task(title:str, due:str = None) -> dict:
   tasks.append(task)
   save_tasks(tasks)
   return task
+
+def list_tasks(show_all:bool = False) -> list[dict]:
+  tasks = load_tasks()
+
+  if show_all:
+    return tasks
+
+  filtered = []
+
+  for task in tasks:
+    completed_flag = task.get("completed")
+
+    if not completed_flag:
+      filtered.append(task)
+
+  return filtered
+
+def get_task(task_id: int) -> dict | None:
+  tasks = load_tasks()
+  
+  for task in tasks:
+    if task.get("id") == task_id:
+      print(task)
+  
+  return None
+
+def complete_task(task_id: int) -> bool:
+  tasks = load_tasks()
+
+  for task in tasks:
+    if task.get("id") == task_id:
+      if task.get("completed") == True:
+        print("Already completed")
+        return False
+      task["completed"] = True
+      task["completed_at"] = datetime.now().isoformat()
+      save_tasks(tasks)
+      return True
+
+  return False
+
