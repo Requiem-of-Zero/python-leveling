@@ -58,7 +58,7 @@ def get_task(task_id: int) -> dict | None:
   
   for task in tasks:
     if task.get("id") == task_id:
-      print(task)
+      return task
   
   return None
 
@@ -68,7 +68,6 @@ def complete_task(task_id: int) -> bool:
   for task in tasks:
     if task.get("id") == task_id:
       if task.get("completed") == True:
-        print("Already completed")
         return False
       task["completed"] = True
       task["completed_at"] = datetime.now().isoformat()
@@ -92,8 +91,23 @@ def edit_task(task_id: int, **fields) -> bool:
         except ValueError:
           raise ValueError(f"Invalid due date format: {due_val}. Use MM/DD/YYYY.")
       save_tasks(tasks)
-      print(tasks)
       return True
 
-  print(tasks)
   return False
+
+def remove_task(task_id: int) -> bool:
+  tasks = load_tasks()
+  filtered = []
+  removed = False
+
+  for task in tasks:
+    if task.get("id") == task_id:
+      removed = True
+      continue
+    filtered.append(task)
+
+  if removed:
+      save_tasks(filtered)
+  
+  print(filtered)
+  return removed
