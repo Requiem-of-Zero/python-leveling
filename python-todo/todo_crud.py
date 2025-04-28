@@ -15,7 +15,7 @@ def save_tasks(tasks: list[dict]) -> None:
   with DATA_FILE.open("w", encoding="utf-8") as todo_obj:
     json.dump({"tasks": tasks}, todo_obj, indent=2)
 
-def add_task(title:str, due:str = None) -> dict:
+def add_task(title:str, due:str = None, tags: list[str] | None = None) -> dict:
   tasks = load_tasks()
   next_id = max((t.get("id", 0) for t in tasks), default=0) + 1
 
@@ -26,10 +26,14 @@ def add_task(title:str, due:str = None) -> dict:
     except ValueError:
       raise ValueError(f"Invalid due date format: {due}. Use MM/DD/YYYY.")
 
+  tags_set = set(tags or [])
+  tags_list = list(tags_set)
+
   task = {
     "id": next_id,
     "title": title,
     "due": due,
+    "tags": tags_list,
     "completed": False,
     "created_at": datetime.now().isoformat()
   }
@@ -51,6 +55,20 @@ def list_tasks(show_all:bool = False) -> list[dict]:
 
     if not completed_flag:
       filtered.append(task)
+
+  return filtered
+
+def filter_tasks(filter_by: str, query: str) -> list[dict]:
+  tasks = load_tasks()
+  filtered = []
+
+  if filter_by == 'tag':
+    for task in tasks:
+      for tag in task['tags']:
+        if tag == query:
+          filtered.append(task)
+  else:
+    print("Tag not found")
 
   return filtered
 

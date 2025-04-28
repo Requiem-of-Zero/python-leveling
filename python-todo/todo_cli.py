@@ -1,5 +1,5 @@
 import argparse
-from todo_crud import add_task, list_tasks, get_task, complete_task, edit_task, remove_task
+from todo_crud import add_task, list_tasks, get_task, complete_task, edit_task, remove_task, filter_tasks
 
 def main():
   parser = argparse.ArgumentParser(
@@ -28,6 +28,13 @@ def main():
     default=None
   )
 
+  parser_add.add_argument(
+    "--tag",
+    action="append",
+    help="Tag to assign to task (can be repeated --tag multiple times)",
+    default=[]
+  )
+
   parser_list = sub.add_parser(
     "list",
     help="List tasks"
@@ -37,6 +44,24 @@ def main():
     "--all",
     action="store_true",
     help="Show all tasks, including the completed ones"
+  )
+
+  parser_filter = sub.add_parser(
+    "filter",
+    help="Filters list with a search type and a query"
+  )
+
+  parser_filter.add_argument(
+    "--filter_by",
+    choices=["title", "tag", "due"],
+    required=True,
+    help="Filter by a certain attribute"
+  )
+
+  parser_filter.add_argument(
+    "--query",
+    required=True,
+    help="Search term (string for title/tag, MM/DD/YYYY for due)"
   )
 
   parser_get = sub.add_parser(
@@ -96,13 +121,16 @@ def main():
   args = parser.parse_args()
 
   if args.command == "add":
-    task = add_task(args.title, args.due)
+    task = add_task(args.title, args.due, args.tag)
     print(f"Added task {task['id']}: {task['title']}")
   elif args.command == "list":
     tasks = list_tasks(show_all=args.all)
     for task in tasks:
       status = "✓" if task.get("completed") else "✗"  # check completion
-      print(f"[{status}] {task['id']}: {task['title']} (due: {task.get('due')})")
+      print(f"[{status}] {task['id']}: {task['title']} tags: {task['tags']} (due: {task.get('due')})")
+  elif args.command == "filter":
+    tasks = filter_tasks(args.filter_by, args.query)
+    print(f"[{tasks}]")
   elif args.command == "get":
     task = get_task(args.id)
     if not task:
