@@ -95,7 +95,7 @@ def main():
 
   args = parser.parse_args()
 
-  if args.command = "add":
+  if args.command == "add":
     task = add_task(args.title, args.due)
     print(f"Added task {task['id']}: {task['title']}")
   elif args.command == "list":
