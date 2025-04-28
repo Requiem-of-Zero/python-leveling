@@ -101,8 +101,8 @@ def main():
   elif args.command == "list":
     tasks = list_tasks(show_all=args.all)
     for task in tasks:
-      status = "✓" if t.get("completed") else "✗"  # check completion
-      print(f"[{status}] {t['id']}: {t['title']} (due: {t.get('due')})")
+      status = "✓" if task.get("completed") else "✗"  # check completion
+      print(f"[{status}] {task['id']}: {task['title']} (due: {task.get('due')})")
   elif args.command == "get":
     task = get_task(args.id)
     if not task:
