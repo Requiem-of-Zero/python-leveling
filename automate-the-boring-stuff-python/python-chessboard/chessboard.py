@@ -148,10 +148,10 @@ def validate_board(board):
     if errors:
         for error in errors:
             print("Error:", error)
-        return "Board is invalid."
+        return 1
     else:
         print("Board is valid and satisfies all criteria.")
-        return "Valid"
+        return 0
 
 main_board = copy.copy(STARTING_PIECES)
 print_help()
