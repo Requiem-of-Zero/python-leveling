@@ -74,7 +74,7 @@ def print_help():
     print('  validate - Validate the pieces and position on the board meet chess rules')
     print('  help - Show this help information.')
     print('  quit - Quits the program.')
-    
+
 #*
 # Has one black king
 # Has one white king
@@ -86,33 +86,72 @@ def print_help():
 # *#
 
 
+# def validate_board(board):
+#     count = {}
+#     total_white = 0
+#     total_black = 0
+#     valid_piece_types = {'P', 'N', 'B', 'R', 'Q', 'K'}
+
+#     for position, piece in board.items():
+#         if piece[0] != 'b' and piece[0] != 'w':
+#             print(f"Piece on {position} has to be either black or white")
+#             return f"Piece on {position} has to be either black or white"
+#         if piece[1] not in valid_piece_types:
+#             print(f"Invalid piece located in {position}")
+#             return f"Invalid piece located in {position}"
+#         if position[0] not in 'abcdefgh' or position[1] not in '87654321':
+#             print(f"Pieces need to be within the bounds of the board")
+#             return "Pieces need to be within the bounds of the board"
+#         if piece not in count:
+#             count.setdefault(piece, 1)
+#         else:
+#             count[piece] += 1
+#         if piece[0] == 'b':
+#             total_black += 1
+#         elif piece[0] == 'w':
+#             total_white += 1
+    
+#     if (total_white == 16 and total_black == 16) and (count['wK'] == 1 and count['bK'] == 1) and (count['wP'] == 8 and count['bP'] == 8):
+#         print("Your board satifies all criteria.")
+
 def validate_board(board):
     count = {}
     total_white = 0
     total_black = 0
     valid_piece_types = {'P', 'N', 'B', 'R', 'Q', 'K'}
+    errors = []
 
     for position, piece in board.items():
-        if piece[0] != 'b' and piece[0] != 'w':
-            print(f"Piece on {position} has to be either black or white")
-            return f"Piece on {position} has to be either black or white"
-        if piece[1] not in valid_piece_types:
-            print(f"Invalid piece located in {position}")
-            return f"Invalid piece located in {position}"
-        if position[0] not in 'abcdefgh' or position[1] not in '87654321':
-            print(f"Pieces need to be within the bounds of the board")
-            return "Pieces need to be within the bounds of the board"
-        if piece not in count:
-            count.setdefault(piece, 1)
-        else:
-            count[piece] += 1
+        if len(position) != 2 or position[0] not in 'abcdefgh' or position[1] not in '12345678':
+            errors.append(f"Invalid board position: {position}")
+        if len(piece) != 2 or piece[0] not in 'bw' or piece[1] not in valid_piece_types:
+            errors.append(f"Invalid piece: {piece} at {position}")
+        count[piece] = count.get(piece, 0) + 1
         if piece[0] == 'b':
             total_black += 1
         elif piece[0] == 'w':
             total_white += 1
-    
-    if (total_white == 16 and total_black == 16) and (count['wK'] == 1 and count['bK'] == 1) and (count['wP'] == 8 and count['bP'] == 8):
-        print("Your board satifies all criteria.")
+
+    if count.get('wK', 0) != 1:
+        errors.append("There must be exactly one white king.")
+    if count.get('bK', 0) != 1:
+        errors.append("There must be exactly one black king.")
+    if total_white > 16:
+        errors.append(f"Too many white pieces: {total_white}")
+    if total_black > 16:
+        errors.append(f"Too many black pieces: {total_black}")
+    if count.get('wP', 0) > 8:
+        errors.append(f"Too many white pawns: {count.get('wP', 0)}")
+    if count.get('bP', 0) > 8:
+        errors.append(f"Too many black pawns: {count.get('bP', 0)}")
+
+    if errors:
+        for error in errors:
+            print("Error:", error)
+        return "Board is invalid."
+    else:
+        print("Board is valid and satisfies all criteria.")
+        return "Valid"
 
 main_board = copy.copy(STARTING_PIECES)
 print_help()
