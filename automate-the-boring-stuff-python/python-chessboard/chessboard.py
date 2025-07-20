@@ -3,7 +3,7 @@ import sys, copy
 STARTING_PIECES = {'a8': 'bR', 'b8': 'bN', 'c8': 'bB', 'd8': 'bQ',
 'e8': 'bK', 'f8': 'bB', 'g8': 'bN', 'h8': 'bR', 'a7': 'bP', 'b7': 'bP',
 'c7': 'bP', 'd7': 'bP', 'e7': 'bP', 'f7': 'bP', 'g7': 'bP', 'h7': 'bP',
-'a1': 'wR', 'b1': 'wN', 'c1': 'ww', 'd1': 'wQ', 'e1': 'wK', 'f1': 'ww',
+'a1': 'wR', 'b1': 'wN', 'c1': 'wB', 'd1': 'wQ', 'e1': 'wK', 'f1': 'wB',
 'g1': 'wN', 'h1': 'wR', 'a2': 'wP', 'b2': 'wP', 'c2': 'wP', 'd2': 'wP',
 'e2': 'wP', 'f2': 'wP', 'g2': 'wP', 'h2': 'wP'}
 
@@ -71,9 +71,48 @@ def print_help():
     print('  reset - Reset pieces back to their starting squares.')
     print('  clear - Clear the entire board.')
     print('  fill wP - Fill entire board with white pawns.')
+    print('  validate - Validate the pieces and position on the board meet chess rules')
     print('  help - Show this help information.')
     print('  quit - Quits the program.')
+    
+#*
+# Has one black king
+# Has one white king
+# Each player can have at most 16 pieces
+# 8/16 are pawns
+# All pieces must be in bounds
+# Pieces begin with w or b to represent their color
+# 
+# *#
 
+
+def validate_board(board):
+    count = {}
+    total_white = 0
+    total_black = 0
+    valid_piece_types = {'P', 'N', 'B', 'R', 'Q', 'K'}
+
+    for position, piece in board.items():
+        if piece[0] != 'b' and piece[0] != 'w':
+            print(f"Piece on {position} has to be either black or white")
+            return f"Piece on {position} has to be either black or white"
+        if piece[1] not in valid_piece_types:
+            print(f"Invalid piece located in {position}")
+            return f"Invalid piece located in {position}"
+        if position[0] not in 'abcdefgh' or position[1] not in '87654321':
+            print(f"Pieces need to be within the bounds of the board")
+            return "Pieces need to be within the bounds of the board"
+        if piece not in count:
+            count.setdefault(piece, 1)
+        else:
+            count[piece] += 1
+        if piece[0] == 'b':
+            total_black += 1
+        elif piece[0] == 'w':
+            total_white += 1
+    
+    if (total_white == 16 and total_black == 16) and (count['wK'] == 1 and count['bK'] == 1) and (count['wP'] == 8 and count['bP'] == 8):
+        print("Your board satifies all criteria.")
 
 main_board = copy.copy(STARTING_PIECES)
 print_help()
@@ -96,6 +135,8 @@ while True:
         for y in '87654321':
             for x in 'abcdefgh':
                 main_board[x + y] = response[1]
+    elif response[0] == 'validate':
+        validate_board(main_board)
     elif response[0] == 'help':
         print_help()
     elif response[0] == 'quit':
