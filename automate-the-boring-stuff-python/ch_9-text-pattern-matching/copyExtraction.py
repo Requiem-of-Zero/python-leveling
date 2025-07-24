@@ -1,0 +1,12 @@
+'''
+Requirements:
+
+- Get the text from the clipboard
+- Find all phone numbers and email addresses in the text.
+  - Create two regex patterns, one for the phone numbers and one for emails
+  - Find all matches (not just the first match)
+- Paste them onto the clipboard
+  - pyperclip to copy and paste strings
+- Neatly format the matched strings into a single string to paste
+- Display some kind of message if no matches were found in the text
+'''
