@@ -32,15 +32,27 @@ email_re = re.compile(r'''(
                       (\.[a-zA-Z]{2,4}) # Dot-something
                       )''', re.VERBOSE)
 
-emailSearch1 = re.search(email_re, "theesamwong@gmail.com")
-phoneSearch1 = re.search(phone_re, "123-415-2313")
+# emailSearch1 = re.search(email_re, "theesamwong@gmail.com")
+# phoneSearch1 = re.search(phone_re, "123-415-2313")
 
 # TODO: Find matches in clipboard text
 
+clipboard_text = str(pyperclip.paste())
 
+matches = []
 
+print(phone_re.findall(clipboard_text))
+
+for groups in phone_re.findall(clipboard_text):
+  phone_num = '-'.join([groups[1], groups[3], groups[5]])
+  if groups[6] != '':
+    phone_num += ' x' + groups[6]
+  matches.append(phone_num)
+
+for groups in email_re.findall(clipboard_text):
+  matches.append(groups)
 
 # TODO: Copy results to the clipboard
 
-print(phoneSearch1)
-print(emailSearch1)
+# print(phoneSearch1)
+# print(emailSearch1)
