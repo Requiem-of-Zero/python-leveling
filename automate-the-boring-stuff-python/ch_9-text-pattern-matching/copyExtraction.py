@@ -50,9 +50,18 @@ for groups in phone_re.findall(clipboard_text):
   matches.append(phone_num)
 
 for groups in email_re.findall(clipboard_text):
-  matches.append(groups)
+  matches.append(groups[0])
 
+print(matches)
 # TODO: Copy results to the clipboard
 
+if len(matches) > 0:
+  match_str = '\n'.join(matches)
+  pyperclip.copy(match_str)
+  print('Copied to clipboard:')
+  print(match_str)
+else:
+  print("No phone numbers or email addresses found.")
+  
 # print(phoneSearch1)
 # print(emailSearch1)
