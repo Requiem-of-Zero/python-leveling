@@ -9,14 +9,38 @@ Requirements:
   - pyperclip to copy and paste strings
 - Neatly format the matched strings into a single string to paste
 - Display some kind of message if no matches were found in the text
+
 '''
 
 import pyperclip, re
 
-phone_re = re.compile(r"(\d{3})-(\d{3})-(\d{4})")
-email_re = re.compile(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
+phone_re = re.compile(r'''(
+    (\d{3}|\(\d{3}\))?  # Area code
+    (\s|-|\.)?  # Separator
+    (\d{3})  # First three digits
+    (\s|-|\.)  # Separator
+    (\d{4})  # Last four digits
+    (\s*(ext|x|ext\.)\s*(\d{2,5}))?  # Extension
+    )''', re.VERBOSE)
+
+# TODO: Create email regex
+
+email_re = re.compile(r'''(
+                      [a-zA-Z0-9._%+-]+ # Username
+                      @ # @ symbol
+                      [a-zA-Z0-9.-]+ # Domain name
+                      (\.[a-zA-Z]{2,4}) # Dot-something
+                      )''', re.VERBOSE)
 
 emailSearch1 = re.search(email_re, "theesamwong@gmail.com")
 phoneSearch1 = re.search(phone_re, "123-415-2313")
 
+# TODO: Find matches in clipboard text
+
+
+
+
+# TODO: Copy results to the clipboard
+
+print(phoneSearch1)
 print(emailSearch1)
