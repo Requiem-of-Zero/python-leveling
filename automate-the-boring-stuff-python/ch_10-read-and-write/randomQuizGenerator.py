@@ -51,7 +51,7 @@ for quiz_num in range(35):
   # TODO: Shuffle the order of the states.
   states = list(capitals.keys())
   random.shuffle(states)
-  
+
   # TODO: Loop through all 50 states, making a question for each.
   for num in range(50):
 
@@ -70,7 +70,7 @@ for quiz_num in range(35):
     quiz_file.write('\n')
 
     # TODO: Write the answer key to a file
-    answer_file.write(f'{num+1}.{'ABCD'[answer_options.index(correct_answer)]}')
+    answer_file.write(f'{num+1}.{'ABCD'[answer_options.index(correct_answer)]}\n')
 
   quiz_file.close()
   answer_file.close()
