@@ -38,10 +38,40 @@ capitals = {'Alabama': 'Montgomery', 'Alaska': 'Juneau', 'Arizona':
 
 # TODO: Generate 35 quiz files.
 for quiz_num in range(35):
+
   # TODO: Create the quiz and answer key files.
+  quiz_file = open(f'capitalsquiz{quiz_num + 1}.txt', 'w', encoding='UTF-8')
+  answer_file = open(f'capitalsquiz_answers{quiz_num + 1}.txt', 'w', encoding='UTF-8')
 
   # TODO: Write out the header for the quiz
+  quiz_file.write('Name:\n\nDate:\n\nPeriod:\n\n')
+  quiz_file.write((' ' * 20) + f'State Capitals Quiz (Form{quiz_num + 1})')
+  quiz_file.write('\n\n')
 
   # TODO: Shuffle the order of the states.
-
+  states = list(capitals.keys())
+  random.shuffle(states)
+  
   # TODO: Loop through all 50 states, making a question for each.
+  for num in range(50):
+
+    # Get right and wrong answers
+    correct_answer = capitals[states[num]]
+    wrong_answers = list(capitals.values())
+    del wrong_answers[wrong_answers.index(correct_answer)] # Remove the correct answer from the capitals list
+    wrong_answers = random.sample(wrong_answers, 3) # Get random samples of lists with length of 3
+    answer_options = wrong_answers + [correct_answer] # Merge the lists
+    random.shuffle(answer_options)
+
+    # TODO: Write the question and answer options to the quiz file
+    quiz_file.write(f'{num + 1}. Capital of {states[num]}:\n')
+    for i in range(4):
+      quiz_file.write(f'    {'ABCD'[i]}. {answer_options[i]}\n') # 'ABCD'[i] treats the string as an array and will evaluate through the string from the for loop, same with answer_options[i]
+    quiz_file.write('\n')
+
+    # TODO: Write the answer key to a file
+    answer_file.write(f'{num+1}.{'ABCD'[answer_options.index(correct_answer)]}')
+
+  quiz_file.close()
+  answer_file.close()
+
