@@ -17,6 +17,9 @@ class TestCalc(unittest.TestCase):
     self.assertEqual(calc.divide(10,5), 2)
     self.assertEqual(calc.divide(-1,1), -1)
     self.assertEqual(calc.divide(-1,-1), 1)
+    self.assertEqual(calc.divide(5,2), 2)
+
+    self.assertRaises(ValueError, calc.divide, 10, 2)
 
   def test_subtract(self):
     self.assertEqual(calc.subtract(10,5), 5)
