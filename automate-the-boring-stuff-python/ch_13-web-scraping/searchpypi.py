@@ -9,3 +9,12 @@ Requirements
   - Call the webbrowser.open() function to open the web browser
 '''
 
+import requests, sys, webbrowser, bs4
+
+print('Searching...') # Display text while downloading the search results page.
+res = requests.get('https://pypi.org/search/?q=' + ' '.join(sys.argv[1:]))
+res.raise_for_status()
+
+# TODO: Retrieve top search results links
+
+# TODO: Open a browser tab for each result.
