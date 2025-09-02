@@ -7,39 +7,8 @@ Requirements
   - Fetch the search results page with the requests module
 - Open a browser tab for each result
   - Call the webbrowser.open() function to open the web browser
-
-.vertical-tabs__tab
 '''
 
-# from playwright.sync_api import sync_playwright
-# import sys
-
-# print("Searching...")
-
-# # Take search terms from CLI args
-# search_term = " ".join(sys.argv[1:])
-
-# with sync_playwright() as p:
-#   browser = p.firefox.launch(channel="firefox", headless=False) # Launch browser
-#   page = browser.new_page()
-
-#   page.goto(f"https://pypi.org/search/?q={search_term}")
-
-#   links = page.locator("a.package-snippet").all()[:5]
-
-#   for link in links:
-#       href = link.get_attribute("href")
-#       if href:
-#           new_page = browser.new_page()
-#           new_page.goto("https://pypi.org" + href)
-
-#   print(f"Opened top {len(links)} results for '{search_term}'")
-
-# searchpypi.py
-# Usage: python3 searchpypi.py <search terms>
-# Example: python3 searchpypi.py requests
-
-# searchpypi.py
 import sys
 from playwright.sync_api import sync_playwright
 
@@ -53,7 +22,12 @@ def main():
 
     with sync_playwright() as p:
         browser = p.firefox.launch(headless=False)  # <-- Firefox browser
-        page = browser.new_page()
+
+        context = browser.new_context(
+            viewport={'width': 1920, 'height': 1080}
+        )
+
+        page = context.new_page()
         
         page.goto(f"https://pypi.org/search/?q={search_term}")
         page.wait_for_selector("a.package-snippet")
@@ -68,7 +42,7 @@ def main():
 
         print(f"Opened top {len(top_links)} results for '{search_term}':")
         for href in top_links:
-            new_page = browser.new_page()
+            new_page = context.new_page()
             new_page.goto("https://pypi.org" + href)
             print(" - https://pypi.org" + href)
 
