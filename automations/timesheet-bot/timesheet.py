@@ -35,6 +35,20 @@ def get_week_start(year, week_number):
     return date.fromisocalendar(year, week_number, 1)
 
 
+def get_current_week_selection():
+    today = date.today()
+    iso_year, iso_week, _ = today.isocalendar()
+    return iso_year, iso_week
+
+
+def format_week_summary(year, week_number, week_start):
+    week_end = week_start + timedelta(days=6)
+    return (
+        f"Selected ISO week {week_number} of {year}: "
+        f"{week_start.isoformat()} to {week_end.isoformat()}"
+    )
+
+
 def click_day(page, date_text):
     page.locator(f"td.fc-day-top[data-date='{date_text}']").click()
 
@@ -113,8 +127,21 @@ def fill_day(page, values, defaults):
     choose_option(page, rest_break_dropdown, "Yes")
 
     entry.get_by_role("button", name="Save").click()
+    page.locator(".ui-sidebar-active").wait_for(state="hidden", timeout=10000)
+    page.locator(".ui-sidebar-mask").wait_for(state="hidden", timeout=10000)
+    page.locator(".splash-screen").wait_for(state="hidden", timeout=10000)
 
-    page.pause()
+
+def fill_week(page, profile, week_start):
+    schedule = profile["schedule"]
+    defaults = profile["defaults"]
+
+    for index, day in enumerate(WEEKDAYS):
+        day_date = week_start + timedelta(days=index)
+
+        print(f"Filling {day}: {day_date.isoformat()}")
+        click_day(page, day_date.isoformat())
+        fill_day(page, schedule[day], defaults)
 
 
 def open_timesheet(page):

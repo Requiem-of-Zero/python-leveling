@@ -1,0 +1,46 @@
+name: "Example schedule"
+portal_url: "https://connexapp.dayzim.com/web/"
+
+schedule:
+  monday:
+    start: "08:00"
+    first_end: "12:00"
+    lunch_start: "12:00"
+    lunch_end: "12:30"
+    second_start: "12:30"
+    end: "16:30"
+
+  tuesday:
+    start: "08:00"
+    first_end: "12:00"
+    lunch_start: "12:00"
+    lunch_end: "12:30"
+    second_start: "12:30"
+    end: "16:30"
+
+  wednesday:
+    start: "08:00"
+    first_end: "12:00"
+    lunch_start: "12:00"
+    lunch_end: "12:30"
+    second_start: "12:30"
+    end: "16:30"
+
+  thursday:
+    start: "08:00"
+    first_end: "12:00"
+    lunch_start: "12:00"
+    lunch_end: "12:30"
+    second_start: "12:30"
+    end: "16:30"
+
+  friday:
+    start: "08:00"
+    first_end: "12:00"
+    lunch_start: "12:00"
+    lunch_end: "12:30"
+    second_start: "12:30"
+    end: "16:30"
+
+defaults:
+  project: "YOUR-PROJECT-CODE"
