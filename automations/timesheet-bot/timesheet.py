@@ -21,6 +21,16 @@ def calculate_day_hours(values):
     return total.seconds / 3600
 
 
+def split_time_for_dropdown(time_text):
+    parsed = datetime.strptime(time_text, "%H:%M")
+
+    hour = parsed.strftime("%I").lstrip("0")
+    minute = parsed.strftime("%M")
+    am_pm = parsed.strftime("%p")
+
+    return hour, minute, am_pm
+
+
 def get_week_start(year, week_number):
     return date.fromisocalendar(year, week_number, 1)
 
@@ -29,9 +39,19 @@ def click_day(page, date_text):
     page.locator(f"td.fc-day-top[data-date='{date_text}']").click()
 
 
-def choose_option(page, select, option_name):
-    select.click()
-    page.get_by_role("option", name=option_name).click()
+def choose_option(page, dropdown, option_name):
+    dropdown.locator(".ui-dropdown-trigger").click()
+    page.get_by_role("option", name=option_name, exact=True).click()
+
+
+def fill_time_picker(page, picker, time_text):
+    hour, minute, am_pm = split_time_for_dropdown(time_text)
+
+    choose_option(page, picker.locator("p-dropdown[formcontrolname='hourPart']"), hour)
+    choose_option(
+        page, picker.locator("p-dropdown[formcontrolname='minutePart']"), minute
+    )
+    choose_option(page, picker.locator("p-dropdown[formcontrolname='amPmPart']"), am_pm)
 
 
 def fill_day(page, values, defaults):
@@ -39,9 +59,61 @@ def fill_day(page, values, defaults):
     entry.wait_for(timeout=10000)
 
     project_dropdown = entry.locator("p-dropdown[formcontrolname='projectcode']")
-    project_dropdown.click()
+    choose_option(page, project_dropdown, defaults["project"])
 
-    page.get_by_role("option", name=defaults["project"], exact=True).click()
+    first_attendance = page.locator("app-attendance-entry").nth(0)
+
+    start_picker = first_attendance.locator(
+        "app-time-picker[formcontrolname='startTime']"
+    )
+    end_picker = first_attendance.locator("app-time-picker[formcontrolname='endTime']")
+
+    fill_time_picker(page, start_picker, values["start"])
+    fill_time_picker(page, end_picker, values["first_end"])
+
+    rest_break_dropdown = page.locator("p-dropdown[inputid='restBreak']").nth(0)
+
+    choose_option(page, rest_break_dropdown, "Yes")
+    entry = page.locator("app-time-entry")
+    entry.get_by_role("button", name="Add").click()
+
+    second_attendance = page.locator("app-attendance-entry").nth(1)
+    second_attendance.wait_for(timeout=10000)
+
+    attendance_type_dropdown = second_attendance.locator(
+        "p-dropdown[formcontrolname='attendanceType']"
+    )
+    choose_option(page, attendance_type_dropdown, "Unpaid Meal Period")
+
+    lunch_start_picker = second_attendance.locator(
+        "app-time-picker[formcontrolname='startTime']"
+    )
+    lunch_end_picker = second_attendance.locator(
+        "app-time-picker[formcontrolname='endTime']"
+    )
+
+    fill_time_picker(page, lunch_start_picker, values["lunch_start"])
+    fill_time_picker(page, lunch_end_picker, values["lunch_end"])
+
+    page.wait_for_timeout(500)
+    entry.get_by_role("button", name="Add").click()
+
+    third_attendance = page.locator("app-attendance-entry").nth(2)
+    third_attendance.wait_for(timeout=10000)
+
+    second_start_picker = third_attendance.locator(
+        "app-time-picker[formcontrolname='startTime']"
+    )
+    end_picker = third_attendance.locator("app-time-picker[formcontrolname='endTime']")
+
+    fill_time_picker(page, second_start_picker, values["second_start"])
+    fill_time_picker(page, end_picker, values["end"])
+
+    rest_break_dropdown = page.locator("p-dropdown[inputid='restBreak']").nth(1)
+    choose_option(page, rest_break_dropdown, "Yes")
+
+    entry.get_by_role("button", name="Save").click()
+
     page.pause()
 
 
