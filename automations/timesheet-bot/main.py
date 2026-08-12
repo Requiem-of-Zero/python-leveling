@@ -1,4 +1,5 @@
 from profiles import load_profile
+from timesheet import print_review
 import argparse
 
 
@@ -14,7 +15,7 @@ def main():
 
     profile = load_profile(args.profile)
 
-    print(profile)
+    print_review(profile)
 
 
 if __name__ == "__main__":
