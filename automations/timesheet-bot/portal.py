@@ -76,12 +76,12 @@ def login_with_credentials(page, login_config):
     page.get_by_role("button", name="Sign In").click()
 
 
-def open_portal(portal_url):
+def open_portal(portal_url, headless=False):
     playwright = sync_playwright().start()
 
     context = playwright.chromium.launch_persistent_context(
         BROWSER_DATA_DIR,
-        headless=False,
+        headless=headless,
     )
 
     page = context.pages[0]

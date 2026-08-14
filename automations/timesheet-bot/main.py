@@ -7,7 +7,7 @@ from timesheet import (
     open_timesheet,
     print_review,
 )
-from portal import open_portal, is_logged_in, login_if_needed
+from portal import has_login_credentials, open_portal, login_if_needed
 import argparse
 
 
@@ -23,6 +23,7 @@ def build_parser():
             "  python main.py\n"
             "  python main.py --profile default\n"
             f"  python main.py --year {current_year} --week-number {current_week}\n"
+            "  python main.py --profile local --headless\n"
             "  python main.py --profile john --year 2026 --week-number 33"
         ),
     )
@@ -40,6 +41,11 @@ def build_parser():
         "--week-number",
         type=int,
         help=f"ISO week number to fill. Default: current week ({current_week})",
+    )
+    parser.add_argument(
+        "--headless",
+        action="store_true",
+        help="Run without showing the browser. Only used when profile login credentials are configured.",
     )
     return parser
 
@@ -67,15 +73,24 @@ def main():
     week_start = get_week_start(year, week_number)
     print(format_week_summary(year, week_number, week_start))
 
-    playwright, context, page = open_portal(profile["portal_url"])
-
     defaults = profile.get("defaults", {})
-    login_if_needed(page, defaults.get("login", profile.get("login")))
+    login_config = defaults.get("login", profile.get("login"))
+    can_login_automatically = has_login_credentials(login_config)
+    use_headless = args.headless and can_login_automatically
+
+    if args.headless and not can_login_automatically:
+        print("Headless requested, but no login credentials are configured.")
+        print("Opening a visible browser so manual login can work.")
+
+    playwright, context, page = open_portal(profile["portal_url"], headless=use_headless)
+
+    login_if_needed(page, login_config)
 
     open_timesheet(page)
     fill_week(page, profile, week_start)
 
-    input("Press Enter to close browser...")
+    if not use_headless:
+        input("Press Enter to close browser...")
 
     context.close()
     playwright.stop()

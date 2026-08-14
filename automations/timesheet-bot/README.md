@@ -35,6 +35,12 @@ Use a specific ISO week:
 python main.py --profile default --year 2026 --week-number 33
 ```
 
+Run headless with a profile that has login credentials:
+
+```bash
+python main.py --profile local --headless
+```
+
 Show available options and the current ISO week:
 
 ```bash
@@ -57,6 +63,14 @@ defaults:
 If either value is blank or missing, the bot uses manual login. If automated login does not complete, the bot falls back to manual login.
 
 Do not commit real credentials to git.
+
+Headless mode:
+
+```bash
+python main.py --profile local --headless
+```
+
+`--headless` only takes effect when the selected profile has both `defaults.login.email` and `defaults.login.password`. Without credentials, the bot opens a visible browser so manual login can work.
 
 ## Profiles
 
