@@ -41,6 +41,12 @@ Run headless with a profile that has login credentials:
 python main.py --profile local --headless
 ```
 
+Submit automatically after filling:
+
+```bash
+python main.py --profile local --headless --submit
+```
+
 Show available options and the current ISO week:
 
 ```bash
@@ -177,7 +183,15 @@ If a different person or assignment uses a different project code, create anothe
 
 ## Safety
 
-Review the filled timesheet in ConnexApp before submitting. The automation should fill entries, but the final timesheet certification should remain a human decision.
+By default, the bot fills and saves each day, then leaves the final timesheet submission for review.
+
+Use `--submit` only when you want the bot to click the final submit button after filling the week:
+
+```bash
+python main.py --profile local --submit
+```
+
+Submitting a timesheet is a certification that the recorded hours are correct. Review your profile and selected week carefully before using `--submit`.
 
 ## Future Ideas
 

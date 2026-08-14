@@ -151,6 +151,14 @@ def open_timesheet(page):
     page.locator(".splash-screen").wait_for(state="hidden")
 
 
+def submit_timesheet(page):
+    print("Submitting timesheet...")
+    page.locator(".fc-submitButton-button").click()
+    page.get_by_role("button", name="Yes").click()
+    page.locator(".splash-screen").wait_for(state="hidden", timeout=10000)
+    print("Submit action completed.")
+
+
 def print_review(profile):
     schedule = profile["schedule"]
     total_hours = 0

@@ -6,6 +6,7 @@ from timesheet import (
     get_week_start,
     open_timesheet,
     print_review,
+    submit_timesheet,
 )
 from portal import has_login_credentials, open_portal, login_if_needed
 import argparse
@@ -24,6 +25,7 @@ def build_parser():
             "  python main.py --profile default\n"
             f"  python main.py --year {current_year} --week-number {current_week}\n"
             "  python main.py --profile local --headless\n"
+            "  python main.py --profile local --headless --submit\n"
             "  python main.py --profile john --year 2026 --week-number 33"
         ),
     )
@@ -46,6 +48,11 @@ def build_parser():
         "--headless",
         action="store_true",
         help="Run without showing the browser. Only used when profile login credentials are configured.",
+    )
+    parser.add_argument(
+        "--submit",
+        action="store_true",
+        help="Submit the timesheet after filling it. Default is fill-only review mode.",
     )
     return parser
 
@@ -88,6 +95,11 @@ def main():
 
     open_timesheet(page)
     fill_week(page, profile, week_start)
+
+    if args.submit:
+        submit_timesheet(page)
+    else:
+        print("Timesheet filled. Review it in ConnexApp before submitting.")
 
     if not use_headless:
         input("Press Enter to close browser...")
