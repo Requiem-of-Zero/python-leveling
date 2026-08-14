@@ -139,9 +139,10 @@ def fill_week(page, profile, week_start):
     for index, day in enumerate(WEEKDAYS):
         day_date = week_start + timedelta(days=index)
 
-        print(f"Filling {day}: {day_date.isoformat()}")
+        print(f"Filling {day.title()}: {day_date.isoformat()}")
         click_day(page, day_date.isoformat())
         fill_day(page, schedule[day], defaults)
+        print(f"{day.title()} has been filled and saved.")
 
 
 def open_timesheet(page):

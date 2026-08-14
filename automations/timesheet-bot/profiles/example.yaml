@@ -44,3 +44,6 @@ schedule:
 
 defaults:
   project: "YOUR-PROJECT-CODE"
+  login:
+    email: "YOUR-EMAIL-HERE"
+    password: "YOUR-PASSWORD-HERE"

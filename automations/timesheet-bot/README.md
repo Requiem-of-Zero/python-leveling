@@ -43,7 +43,20 @@ python main.py --help
 
 ## Login
 
-The bot does not store usernames or passwords. Log into ConnexApp normally in the browser window. Playwright can reuse the local browser session on later runs through `browser-data/`.
+By default, leave login fields empty and log into ConnexApp normally in the browser window. Playwright can reuse the local browser session on later runs through `browser-data/`.
+
+Optional automated login can be enabled locally by filling both values in a profile:
+
+```yaml
+defaults:
+  login:
+    email: "person@example.com"
+    password: "local-password"
+```
+
+If either value is blank or missing, the bot uses manual login. If automated login does not complete, the bot falls back to manual login.
+
+Do not commit real credentials to git.
 
 ## Profiles
 
@@ -66,6 +79,15 @@ cp profiles/example.yaml profiles/john.yaml
 python main.py --profile john
 ```
 
+For profiles that contain real login credentials, prefer an ignored local filename:
+
+```bash
+cp profiles/example.yaml profiles/local.yaml
+python main.py --profile local
+```
+
+`profiles/local*.yaml` and `profiles/private*.yaml` are ignored by git.
+
 ## Profile Sections
 
 `name`
@@ -78,6 +100,37 @@ ConnexApp URL. Usually:
 
 ```yaml
 portal_url: "https://connexapp.dayzim.com/web/"
+```
+
+`defaults.login`
+
+Optional local login configuration.
+
+Manual/session login:
+
+```yaml
+defaults:
+  login:
+    email: ""
+    password: ""
+```
+
+Automated login:
+
+```yaml
+defaults:
+  login:
+    email: "person@example.com"
+    password: "local-password"
+```
+
+Keep this local to the machine using the bot.
+
+Recommended for real credentials:
+
+```text
+profiles/local.yaml
+profiles/private-your-name.yaml
 ```
 
 `schedule`
@@ -114,11 +167,9 @@ Review the filled timesheet in ConnexApp before submitting. The automation shoul
 
 ## Future Ideas
 
-Optional automated login mode:
+Safer credential storage:
 
-The current bot uses manual login plus a saved browser session. A future version could add an optional login configuration for users who understand the risks and whose employer policies allow it.
-
-Avoid hardcoding credentials directly in Python files or committing them to git. Safer options would be:
+The current optional automated login mode reads credentials from the local YAML profile. Future versions could support safer storage options:
 
 ```text
 .env
@@ -126,5 +177,3 @@ system keyring
 password manager CLI
 encrypted local config
 ```
-
-If this is added later, keep it opt-in and local-only. The regular profile YAML should still focus on schedule and project settings, while sensitive login details should stay out of committed files.

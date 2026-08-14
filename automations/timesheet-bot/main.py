@@ -7,7 +7,7 @@ from timesheet import (
     open_timesheet,
     print_review,
 )
-from portal import open_portal, is_logged_in, wait_for_manual_login
+from portal import open_portal, is_logged_in, login_if_needed
 import argparse
 
 
@@ -69,14 +69,8 @@ def main():
 
     playwright, context, page = open_portal(profile["portal_url"])
 
-    print(page.url)
-    print(is_logged_in(page))
-
-    if not is_logged_in(page):
-        wait_for_manual_login(page)
-
-    print(page.url)
-    print(is_logged_in(page))
+    defaults = profile.get("defaults", {})
+    login_if_needed(page, defaults.get("login", profile.get("login")))
 
     open_timesheet(page)
     fill_week(page, profile, week_start)

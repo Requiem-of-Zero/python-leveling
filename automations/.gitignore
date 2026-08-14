@@ -1,3 +1,7 @@
 INSTRUCTION_README.md
 browser-data/
 __pycache__
+profiles/local*.yaml
+profiles/private*.yaml
+timesheet-bot/profiles/default.yaml
+timesheet-bot/profiles/private*.yaml
